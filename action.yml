@@ -15,7 +15,7 @@ inputs:
   custom-audience:
     description: "Cloudflare OIDC Proxy Audience"
     required: false
-    default: "https://api.cloudflare.com/client/v4"
+    default: "api.cloudflare.com"
 
 outputs:
   api_token:
