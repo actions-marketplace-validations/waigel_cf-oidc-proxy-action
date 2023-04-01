@@ -17,7 +17,7 @@
   "author": "Johannes Waigel <johannes@waigel.com>",
   "license": "MIT",
   "scripts": {
-    "build": "tsc src/main.ts --outDir dist",
+    "build": "ncc build -m src/main.ts -o dist/main",
     "lint": "gts lint",
     "clean": "gts clean",
     "compile": "tsc",
@@ -32,6 +32,7 @@
   },
   "devDependencies": {
     "@types/node": "^14.11.2",
+    "@vercel/ncc": "^0.36.1",
     "gts": "^3.1.1",
     "typescript": "~4.7.0"
   }

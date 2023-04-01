@@ -19,11 +19,14 @@ const oidcWarning =
   'run from a fork. For more information, please see https://docs.github.com/en/actions/security-guides/automatic-token-authentication#permissions-for-the-github_token';
 
 async function main() {
-  const proxy = getInput('proxy', {required: true});
-  const assumeGroup = getInput('assumeGroup', {required: true});
-  const audience = getInput('audience');
+  const proxyUrl = getInput('proxy-url', {required: true});
+  const roleToAssume = getInput('role-to-assume', {required: true});
+  let audience = getInput('custom-audience');
+  if (!audience) {
+    audience = 'api.cloudflare.com';
+  }
 
-  logDebug(`Using workload identity provider "${proxy}"`);
+  logDebug(`Using workload identity provider "${proxyUrl}"`);
 
   const oidcTokenRequestToken = process.env.ACTIONS_ID_TOKEN_REQUEST_TOKEN;
   const oidcTokenRequestURL = process.env.ACTIONS_ID_TOKEN_REQUEST_URL;
@@ -38,7 +41,7 @@ async function main() {
   }
 
   const oidcClient = await axios.create({
-    baseURL: proxy,
+    baseURL: proxyUrl,
     headers: {
       Authorization: `Bearer ${token}`,
       UserAgent: 'github-actions-workload-identity',
@@ -47,15 +50,15 @@ async function main() {
 
   await oidcClient
     .post<CloudflareTokenResponse>('/prod/openid-connect', {
-      assumeGroup,
+      assumeGroup: roleToAssume,
     })
     .then(response => {
       const {data} = response;
       logInfo(`Successfully generated token for ${data.name}`);
       setSecret(data.value);
-      setOutput('api_key', data.value);
-      setOutput('api_key_expiration', data.expires_on);
-      setOutput('api_key_id', data.id);
+      setOutput('api_token', data.value);
+      setOutput('api_token_expiration', data.expires_on);
+      setOutput('api_token_id', data.id);
     })
     .catch(error => {
       throw new Error(`Failed to generate token: ${error}`);
