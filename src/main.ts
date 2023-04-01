@@ -21,6 +21,7 @@ const oidcWarning =
 async function main() {
   const proxyUrl = getInput('proxy-url', {required: true});
   const roleToAssume = getInput('role-to-assume', {required: true});
+  const proxyUrlPath = getInput('proxy-url-path', {required: true});
   let audience = getInput('custom-audience');
   if (!audience) {
     audience = 'api.cloudflare.com';
@@ -45,12 +46,13 @@ async function main() {
     headers: {
       Authorization: `Bearer ${token}`,
       UserAgent: 'github-actions-workload-identity',
+      'Content-Type': 'application/json',
     },
   });
 
   await oidcClient
-    .post<CloudflareTokenResponse>('/prod/openid-connect', {
-      assumeGroup: roleToAssume,
+    .post<CloudflareTokenResponse>(proxyUrlPath, {
+      roleToAssume,
     })
     .then(response => {
       const {data} = response;

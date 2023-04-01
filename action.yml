@@ -5,6 +5,10 @@ inputs:
   proxy-url:
     description: "Cloudflare OIDC Proxy URL"
     required: true
+  proxy-url-path:
+    description: "Cloudflare OIDC Proxy URL Path"
+    required: false
+    default: /prod/openid-connect
   role-to-assume:
     description: "Cloudflare OIDC Proxy Role to Assume"
     required: true
