@@ -1,0 +1,26 @@
+name: "Cloudflare OIDC Proxy Action"
+description: "Authenticate with Cloudflare OIDC Proxy"
+
+inputs:
+  proxy:
+    description: "Cloudflare OIDC Proxy URL"
+    required: true
+  assumeGroup:
+    description: "Cloudflare OIDC Proxy Assume Group"
+    required: true
+  audience:
+    description: "Cloudflare OIDC Proxy Audience"
+    required: false
+    default: "https://api.cloudflare.com/client/v4"
+
+outputs:
+  api_key:
+    description: "Cloudflare API Key (short-lived)"
+  api_key_expiration:
+    description: "Cloudflare API Key Expiration"
+  api_key_id:
+    description: "Cloudflare API Key ID"
+
+runs:
+  using: "node16"
+  main: "dist/main.js"
